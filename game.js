@@ -46,8 +46,8 @@ var Alien = function (aType, aLine, aCol) {
         if (this.alive) { //draw the alien
             canvas.drawImage(
             pic,
-            423,
-            19,
+            281,
+            0,
             this.width,
             this.height,
             this.positionX,
@@ -71,6 +71,9 @@ Gun = {
     position: 220,
     toleft: false,
     toright: false,
+    speed: 15,
+    firestep: 0,
+    animation: null,
 
     init: function () { //initialize the gun and his move
         this.draw();
@@ -80,18 +83,37 @@ Gun = {
         setInterval("Gun.toRight()", 30);
     },
 
+    animate: function() {
+        this.firestep = this.firestep + 1;
+	this.clear();
+	if (this.firestep < 5) {
+	    this.draw();
+	} else {
+	    this.firestep = 0;
+            this.ray.create();
+            clearInterval(this.animation);
+	    this.animation = null;
+	}
+    },
+
+    clear : function() {
+	canvas.clearRect(this.position, 448, 40, 50);
+    },
+
     draw: function () { //draws the gun
-        canvas.drawImage(pic, 0, 0, 65, 60, this.position, 448, 50, 45);
+        canvas.drawImage(pic, 46 * this.firestep, 0, 46, 60, this.position, 448, 40, 45);
     },
 
     fire: function () { //shot
-        this.ray.create();
+	if (this.firestep == 0 && !this.ray.active) {
+            this.animation = setInterval("Gun.animate()", this.speed);
+        }
     },
 
     toLeft: function () { //moves the gun to left
         if (this.toleft) {
             if (this.position - 5 > 0) {
-                canvas.clearRect(0, 450, Game.width, 50);
+		this.clear();
                 this.position -= 5;
                 this.draw();
             }
@@ -101,7 +123,7 @@ Gun = {
     toRight: function () { //moves the gun to right
         if (this.toright) {
             if (this.position + 30 < Game.width) {
-                canvas.clearRect(0, 450, Game.width, 50);
+		this.clear();
                 this.position += 5;
                 this.draw();
             }
@@ -117,7 +139,7 @@ Gun = {
         active: false,
         create: function () { //created the ray if it does not exist
             if (!this.active) {
-                this.positionX = Gun.position + 22;
+                this.positionX = Gun.position + 23;
                 this.active = true;
                 this.animation = setInterval("Gun.ray.animate()", this.speed);
             }
@@ -139,8 +161,9 @@ Gun = {
                 //canvas.moveTo(this.positionX, this.positionY);
                 //canvas.lineTo(this.positionX, this.positionY + this.length);
                 //canvas.stroke();
-                canvas.drawImage(pic, 397, 15, 7, 32, this.positionX, this.positionY, 5, 33);
-                canvas.clearRect(0, 450, Game.width, 50);
+                canvas.drawImage(pic, 276, 0, 7, 32, this.positionX, this.positionY, 5, 33);
+                //canvas.clearRect(0, 450, Game.width, 50);
+		Gun.clear();
                 Gun.draw();
 
                 for (i = 0; i < 3; i++) {
@@ -251,7 +274,7 @@ Game = {
     onkeydown: function (ev) { //key down event
         if (ev.keyCode == 37) Gun.toleft = true;
         else if (ev.keyCode == 39) Gun.toright = true;
-        else if (ev.keyCode == 32) Gun.fire();
+        else if (ev.keyCode == 32 && Gun.firestep == 0) Gun.fire();
         else return;
     },
     onkeyup: function (ev) { //key up event
