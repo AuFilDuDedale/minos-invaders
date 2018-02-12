@@ -11,6 +11,11 @@ var Alien = function (aType, aLine, aCol) {
     this.direction = 1;
     this.state = 0;
 
+    this.reset = function () {
+        this.positionX = 100 + this.width * this.column;
+        this.positionY = 100 + 30 * this.line;
+    };
+
     this.changeState = function () { //change the state (2 different images for each alien)
         this.state = !this.state ? 20 : 0;
     };
@@ -275,33 +280,43 @@ Game = {
     },
     nextLevel: function () {
         //resurect aliens
+        this.alives = 0;
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 11; j++) {
                 this.aliens[i][j].alive = true;
+                this.aliens[i][j].reset()
                 this.alives++;
             }
         }
         clearInterval(this.animation);
-        this.level++; 
         this.play();
-        this.increaseSpeed(this.interval);
     }
 };
 
 //define the global context of the game
-var element = document.getElementById('aliensCanvas');
-if (element.getContext) {
-    var canvas = element.getContext('2d');
+var element = document.getElementById('minos_invaders_canvas');
+var canvas;
+var pic;
 
-    var pic = new Image();
-    pic.src = 'sprite.png';
+function minos_invaders_init() {
+    if (element.getContext) {
+        canvas = element.getContext('2d');
 
-    Game.init(530, 500);
+        pic = new Image();
+        pic.src = 'https://aufildudedale.fr/minos-invaders/sprite.png';
 
-    document.body.onkeydown = function (ev) {
-        Game.onkeydown(ev);
-    };
-    document.body.onkeyup = function (ev) {
-        Game.onkeyup(ev);
-    };
-}
+        Game.init(530, 500);
+
+        document.body.onkeydown = function (ev) {
+            Game.onkeydown(ev);
+        };
+        document.body.onkeyup = function (ev) {
+            Game.onkeyup(ev);
+        };
+
+        var rejouer = document.getElementById("rejouer_button");
+        rejouer.onclick = function() {
+            Game.nextLevel();
+        }
+    }
+};
