@@ -186,8 +186,6 @@ Game = {
         this.play();
         Gun.init();
         this.refreshScore(0);
-        document.getElementById('level').innerHTML = this.level;
-        document.getElementById('inter').innerHTML = this.interval;
     },
 
     changeDirection: function () { //change the direction (left or right)
@@ -244,7 +242,6 @@ Game = {
         else this.interval = newInterval;
 
         this.animation = setInterval("Game.animate()", this.interval);
-        document.getElementById('inter').innerHTML = this.interval;
     },
     onkeydown: function (ev) { //key down event
         if (ev.keyCode == 37) Gun.toleft = true;
@@ -275,8 +272,6 @@ Game = {
     refreshScore: function (points) { //display the score
         this.alives--;
         this.score += points;
-        document.getElementById('score').innerHTML = this.score;
-        document.getElementById('alives').innerHTML = this.alives;
     },
     nextLevel: function () {
         //resurect aliens
@@ -288,10 +283,8 @@ Game = {
         }
         clearInterval(this.animation);
         this.level++; 
-        document.getElementById('level').innerHTML = this.level;
         this.play();
         this.increaseSpeed(this.interval);
-        document.getElementById('inter').innerHTML = this.interval;
     }
 };
 
@@ -301,7 +294,7 @@ if (element.getContext) {
     var canvas = element.getContext('2d');
 
     var pic = new Image();
-    pic.src = 'sprite_2.png';
+    pic.src = 'sprite.png';
 
     Game.init(530, 500);
 

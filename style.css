@@ -1,35 +1,6 @@
-canvas {
-    position:absolute;
-    left:20px;
-    top:60px;
-}
 #aliensCanvas {
     background-color:black;
 }
 #gunraysCanvas {
     background-color:transparent;
-}
-#scoreDiv, #alivesDiv, #levelDiv {
-    position:absolute;
-    top:100px;
-    left:650px;
-}
-#score, #alives, #level {
-    display:block;
-    width:90px;
-    height:30px;
-    border:2px solid #333;
-    border-radius:7px 7px 7px;
-    text-align:center;
-    font-size: 25px;
-    line-height:30px;
-}
-#scoreDiv {
-    top:160px;
-}
-#alivesDiv {
-    top:320px;
-}
-h2 {
-    margin:0;
 }
