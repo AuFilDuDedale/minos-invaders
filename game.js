@@ -194,7 +194,7 @@ Game = {
     height: 0,
     width: 0,
     interval: 0,
-    intervalDefault: 1000,
+    intervalDefault: 500,
     direction: 1,
     animation: null,
     alives: 1,
@@ -240,8 +240,9 @@ Game = {
             }
         }
     },
-    animate: function () { //move the aliens		
+    animate: function () { //move the aliens
         this.clearCanvas();
+	Gun.draw();
         Gun.ray.draw();
         this.checkAliens();
         for (i = 0; i < 3; i++) {
@@ -274,7 +275,10 @@ Game = {
     onkeydown: function (ev) { //key down event
         if (ev.keyCode == 37) Gun.toleft = true;
         else if (ev.keyCode == 39) Gun.toright = true;
-        else if (ev.keyCode == 32 && Gun.firestep == 0) Gun.fire();
+        else if (ev.keyCode == 32 && Gun.firestep == 0) {
+	    Gun.fire();
+            ev.preventDefault();
+	}
         else return;
     },
     onkeyup: function (ev) { //key up event
@@ -285,13 +289,16 @@ Game = {
     over: function () { //ends the game
         clearInterval(this.animation);
         canvas.clearRect(0, 0, this.width, this.height);
-        canvas.font = "40pt Calibri,Geneva,Arial";
-        canvas.strokeStyle = "rgb(FF,0,0)";
-        canvas.fillStyle = "rgb(0,20,180)";
-        canvas.strokeText("Game Over", this.width / 2 - 150, this.height / 2 - 10);
+	document.getElementById("perdu").style.visibility='visible';
+        document.getElementById("perdu").style.display='block';
     },
     checkAliens: function () { //check number of aliens
-        if (this.alives == 0) this.nextLevel();
+        if (this.alives == 0) {
+	    clearInterval(this.animation);
+            canvas.clearRect(0, 0, this.width, this.height);
+	    document.getElementById("gagne").style.visibility='visible';
+            document.getElementById("gagne").style.display='block';
+	}
         else if (this.alives == 1) this.increaseSpeed(150 - (this.level * 10));
         else if (this.alives <= 10) this.increaseSpeed(200 - (this.level * 10));
         else if (this.alives <= 10) this.increaseSpeed(300 - (this.level * 10));
@@ -312,6 +319,8 @@ Game = {
             }
         }
         clearInterval(this.animation);
+	Gun.clear();
+	Gun.position = 220;
         this.play();
     }
 };
@@ -340,6 +349,15 @@ function minos_invaders_init() {
         var rejouer = document.getElementById("rejouer_button");
         rejouer.onclick = function() {
             Game.nextLevel();
+	    document.getElementById("perdu").style.visibility='invisible';
+            document.getElementById("perdu").style.display='none';
+            document.getElementById("gagne").style.visibility='invisible';
+            document.getElementById("gagne").style.display='none';
         }
+
+	document.getElementById("perdu").style.visibility='invisible';
+	document.getElementById("perdu").style.display='none';
+	document.getElementById("gagne").style.visibility='invisible';
+	document.getElementById("gagne").style.display='none';
     }
 };
